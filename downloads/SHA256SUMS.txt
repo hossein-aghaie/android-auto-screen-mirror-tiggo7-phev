@@ -1,1 +1,2 @@
 3186464a3e07197cb045c7f77235e1f0c700072679ef895549588526673ae520  My-Screen-Mirror-0.1.0-debug.apk
+931333f1b01b71edf17f60ecdece47419102c9c063aefd71639d4a8b2caab7df  My-Screen-Mirror-0.2.0-debug.apk

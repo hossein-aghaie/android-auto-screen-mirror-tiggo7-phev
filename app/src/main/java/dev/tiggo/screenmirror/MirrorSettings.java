@@ -15,5 +15,11 @@ final class MirrorSettings {
     boolean touch() { return prefs.getBoolean("touch", false); }
     boolean landscape() { return prefs.getBoolean("landscape", false); }
     boolean fill() { return prefs.getBoolean("fill", false); }
+    boolean singleApp() { return prefs.getBoolean("single_app", false); }
+    boolean lightTheme() { return prefs.getBoolean("light_theme", false); }
+    int stopMinutes() {
+        int value = prefs.getInt("stop_minutes", 0);
+        return value == 15 || value == 30 ? value : 0;
+    }
     void flag(String key, boolean value) { prefs.edit().putBoolean(key, value).apply(); }
 }

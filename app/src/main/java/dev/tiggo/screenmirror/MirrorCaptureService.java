@@ -29,6 +29,7 @@ public final class MirrorCaptureService extends Service {
     static final String START = "dev.tiggo.screenmirror.MIRROR_START";
     static final String STOP = "dev.tiggo.screenmirror.MIRROR_STOP";
     static final String CONSENT = "captureConsent";
+    static final String WHOLE_DISPLAY = "wholeDisplayRequested";
     private static final String CHANNEL = "mirror_capture";
     private static final int NOTIFICATION = 44;
     private int maxEdge;
@@ -74,6 +75,7 @@ public final class MirrorCaptureService extends Service {
             handler.postDelayed(this, 2000);
         }
     };
+    private final Runnable timeLimit = () -> finishCapture("نشست طبق زمان انتخاب‌شده پایان یافت");
 
     @Override public void onCreate() {
         super.onCreate();
@@ -94,6 +96,7 @@ public final class MirrorCaptureService extends Service {
             finishCapture("مجوز اشتراک صفحه دریافت نشد");
             return START_NOT_STICKY;
         }
+        bridge.sessionWholeDisplay = intent.getBooleanExtra(WHOLE_DISPLAY, false);
         try {
             NotificationManager notifications = getSystemService(NotificationManager.class);
             notifications.createNotificationChannel(new NotificationChannel(CHANNEL,
@@ -139,13 +142,16 @@ public final class MirrorCaptureService extends Service {
             if (display == null) throw new IllegalStateException("No virtual display");
             bridge.capturing = true;
             bridge.framesShown = 0;
+            bridge.metrics.start(SystemClock.elapsedRealtime());
             bridge.error = "";
             bridge.status = "اشتراک تصویر روشن است؛ صفحهٔ میرور را روی ماشین باز نگه دارید";
-            bridge.rotationStatus = bridge.settings.landscape()
+            bridge.rotationStatus = bridge.settings.landscape() && bridge.sessionWholeDisplay
                     ? (RotationSession.begin(this) ? "حالت افقی درخواست شد" : "اجازهٔ تغییر تنظیم چرخش فعال نیست")
                     : "چرخش طبق تنظیم خود گوشی";
             lastSurfaceSeen = SystemClock.elapsedRealtime();
             handler.post(watchdog);
+            int stopMinutes = bridge.settings.stopMinutes();
+            if (stopMinutes > 0) handler.postDelayed(timeLimit, stopMinutes * 60_000L);
         } catch (RuntimeException error) { fail("CAPTURE_START", error); }
         return START_NOT_STICKY;
     }

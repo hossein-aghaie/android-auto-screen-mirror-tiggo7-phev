@@ -31,5 +31,9 @@
             <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
             <meta-data android:name="android.accessibilityservice" android:resource="@xml/touch_accessibility" />
         </service>
+        <provider android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.support" android:exported="false" android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/report_paths" />
+        </provider>
     </application>
 </manifest>

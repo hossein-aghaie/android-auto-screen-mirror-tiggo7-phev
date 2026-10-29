@@ -28,6 +28,8 @@ final class MirrorBridge {
     int sourceWidth;
     int sourceHeight;
     boolean wholeDisplayVerified;
+    boolean sessionWholeDisplay;
+    final SessionMetrics metrics = new SessionMetrics();
     private float[] lastPlacement;
     private long lastPresented;
     private final Rect visible = new Rect();
@@ -69,6 +71,7 @@ final class MirrorBridge {
     boolean hasSurface() { return screenOpen && surface != null && surface.isValid() && width > 0 && height > 0; }
 
     void stopped(String message) {
+        metrics.stop(SystemClock.elapsedRealtime());
         capturing = false;
         wholeDisplayVerified = false;
         lastPlacement = null;
@@ -131,12 +134,15 @@ final class MirrorBridge {
     void resetMapping() { lastPlacement = null; }
 
     boolean canControl() {
-        boolean ready = capturing && hasSurface() && settings.touch() && wholeDisplayVerified
-                && !context.getSystemService(android.app.KeyguardManager.class).isKeyguardLocked()
-                && lastPlacement != null && SystemClock.elapsedRealtime() - lastPresented < 2500;
-        if (!ready) inputStatus = settings.touch() ? "لمس منتظر تصویر تازهٔ کل صفحه است" : "لمس خاموش است";
+        boolean ready = SessionMetrics.canForwardInput(capturing, hasSurface(), settings.touch(), sessionWholeDisplay,
+                wholeDisplayVerified, context.getSystemService(android.app.KeyguardManager.class).isKeyguardLocked(),
+                lastPlacement != null, SystemClock.elapsedRealtime() - lastPresented);
+        if (!ready) inputStatus = !sessionWholeDisplay && capturing ? "حالت تک‌برنامه؛ کنترل لمس خاموش است"
+                : settings.touch() ? "لمس منتظر تصویر تازهٔ کل صفحه است" : "لمس خاموش است";
         return ready;
     }
+
+    String hostSize() { return hasSurface() ? width + " × " + height : "—"; }
 
     float[] mapPoint(float x, float y) {
         if (!canControl() || x < 0 || y < 0 || x >= width || y >= height
