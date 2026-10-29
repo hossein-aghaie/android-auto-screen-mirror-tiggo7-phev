@@ -1,0 +1,17 @@
+.gradle/
+.android-user/
+.tooling/
+.idea/
+**/build/
+local.properties
+*.iml
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+.env
+.env.*
+*.log
+captures/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,37 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+        if (providers.gradleProperty('useMirror').orNull == 'true') {
+            maven { url 'https://maven.aliyun.com/repository/google' }
+        }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        if (providers.gradleProperty('useMirror').orNull == 'true') {
+            maven {
+                url 'https://maven.aliyun.com/repository/google'
+                content {
+                    includeGroupByRegex 'androidx\\..*'
+                    includeGroupByRegex 'com\\.android\\..*'
+                }
+            }
+            google {
+                content {
+                    excludeGroupByRegex 'androidx\\..*'
+                    excludeGroupByRegex 'com\\.android\\..*'
+                }
+            }
+            mavenCentral()
+            maven { url 'https://maven.aliyun.com/repository/central' }
+        } else {
+            google()
+            mavenCentral()
+        }
+    }
+}
+rootProject.name = 'MyScreenMirror'
+include ':app'

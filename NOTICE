@@ -1,0 +1,16 @@
+My Screen Mirror
+
+The project currently has no separately selected public source-code license.
+
+Bundled Gradle wrapper scripts/JAR are distributed by the Gradle project under
+Apache License 2.0. Their original notices are retained in the scripts.
+https://www.apache.org/licenses/LICENSE-2.0
+https://github.com/gradle/gradle
+
+AndroidX dependencies are resolved from the configured Maven repositories.
+AndroidX is distributed under Apache License 2.0; other transitive dependencies
+retain their respective notices and licenses.
+https://android.googlesource.com/platform/frameworks/support/+/androidx-main/LICENSE.txt
+
+Android, Android Auto, Google, Chery and Fownix names identify compatibility
+targets or third-party products. This project is not affiliated with them.
